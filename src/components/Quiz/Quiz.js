@@ -74,21 +74,29 @@ export default function Quiz() {
 
 
     function selectChoice(event) {
-        // The id of the choice selected
+        // The id of the choice selected + id of parent question
+        let questionID = event.target.parentElement.previousElementSibling.id;
         let eventChoiceID = event.target.id;
 
         let newQuizData = quizData.map(question => {
-            let newChoices = question.choices.map(choice => {
-                return (choice.id === eventChoiceID) ?
-                    { ...choice, isSelected: !choice.isSelected } :
-                    { ...choice, isSelected: choice.isSelected }
-            })
+            if (question.id !== questionID) {
+                let newChoices = question.choices.map(choice => {
+                    return { ...choice }
+                })
 
-            return {
-                ...question,
-                choices: newChoices
+                return { ...question, choices: newChoices }
+            } else {
+                let newChoices = question.choices.map(choice => {
+                    if (choice.id === eventChoiceID) {
+                        return { ...choice, isSelected: true };
+                    } else {
+                        return { ...choice, isSelected: false };
+                    }
+                })
+
+                return { ...question, choices: newChoices }
             }
-        });
+        })
 
         setQuizData(newQuizData);
     }
