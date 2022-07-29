@@ -1,0 +1,31 @@
+.btn--generic {
+    font-size: 10.24px;
+    line-height: 12px;
+    font-family: "Inter";
+    font-weight: 600;
+
+    padding: 12px 22px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(77, 91, 158, 1);
+    color: rgba(245, 247, 251, 1);
+    cursor: pointer;
+}
+
+.btn--generic:hover {
+    background-color: rgba(97, 111, 1781, 1);
+}
+
+.results-group {
+    display: flex;
+    align-items: center;
+}
+
+.results {
+    font-size: 13px;
+    line-height: 15px;
+    font-family: "Inter";
+    font-weight: 700;
+    color: rgba(41, 50, 100, 1);
+    margin-right: 19px;
+}

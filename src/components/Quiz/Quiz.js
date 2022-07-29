@@ -1,20 +1,123 @@
-import React from "react";
-import Question from "../Question/Question"
+import React, { useState, useEffect } from "react";
+import Question from "../Question/Question";
+import { nanoid } from "nanoid";
+import "./Quiz.css"
 
-export default function Quiz(props) {
-    // question, correct_answer, incorrect_answers
-    console.log(props.data)
+// Helpers:
+function formatQuestionObjects(data) {
+    // Cleans up the data from opentdb API call.
+    // See README.md ffor Object structure.
 
-    const quizItems = props.data.map((query, index) => {
+    const qustionObjects = data.map(question => {
+
+        const choices = shuffler([
+            ...question.incorrect_answers,
+            question.correct_answer
+        ]);
+
+        const formattedChoices = choices.map(choice => {
+            return {
+                id: `choice-${nanoid()}`,
+                value: parseQuestionStrings(choice),
+                isSelected: false,
+                isCorrect: (question.correct_answer === choice)
+            }
+        })
+
+        return {
+            id: `question-${nanoid()}`,
+            question: parseQuestionStrings(question.question),
+            correctAnswer: parseQuestionStrings(question.correct_answer),
+            choices: formattedChoices
+        }
+    })
+
+    return qustionObjects
+}
+
+function shuffler(arr) {
+    // Randomly rearranges the elements of an array.
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        const temp = arr[i]
+        arr[i] = arr[j]
+        arr[j] = temp;
+    }
+    return arr
+}
+
+function parseQuestionStrings(str) {
+    // get rid of escaped special characters: 
+    const parsed = new DOMParser()
+        .parseFromString(str, "text/html")
+
+    return parsed.documentElement.textContent;
+}
+
+export default function Quiz() {
+
+    const [quizData, setQuizData] = useState([]);
+    const [gameOngoing, setGameOngoing] = useState(true);
+    const [correctCount, setCorrectCount] = useState(0);
+
+    useEffect(() => {
+        async function getQuestions() {
+            const res = await fetch("https://opentdb.com/api.php?amount=5");
+            const data = await res.json();
+
+            setQuizData(formatQuestionObjects(data.results))
+        }
+
+        getQuestions();
+    }, [])
+
+
+
+    function selectChoice(event) {
+        // The id of the choice selected
+        let eventChoiceID = event.target.id;
+
+        let newQuizData = quizData.map(question => {
+            let newChoices = question.choices.map(choice => {
+                return (choice.id === eventChoiceID) ?
+                    { ...choice, isSelected: !choice.isSelected } :
+                    { ...choice, isSelected: false }
+            })
+
+            return {
+                ...question,
+                choices: newChoices
+            }
+        });
+
+        setQuizData(newQuizData);
+    }
+
+
+    const quizItems = quizData.map(question => {
         return (
-            <Question key={`quiz-${index}`} query={query} />
+            < Question
+                key={question.id}
+                question={question}
+                selectChoice={selectChoice}
+                gameOngoing={gameOngoing}
+            />
         )
     })
 
+    const btnResults = gameOngoing ?
+        <button className="btn--generic">Check Results</button> :
+        <>
+            <p className="results">You scored {correctCount} / {quizData.length} correct answers</p>
+            <button className="btn--generic">Play Again</button>
+        </>
 
     return (
         <main className="quiz">
             {quizItems}
+            <div className="results-group">
+                {btnResults}
+            </div>
         </main>
     )
 }
