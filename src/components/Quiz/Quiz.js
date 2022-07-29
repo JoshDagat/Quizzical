@@ -81,7 +81,7 @@ export default function Quiz() {
             let newChoices = question.choices.map(choice => {
                 return (choice.id === eventChoiceID) ?
                     { ...choice, isSelected: !choice.isSelected } :
-                    { ...choice, isSelected: false }
+                    { ...choice, isSelected: choice.isSelected }
             })
 
             return {
@@ -93,6 +93,20 @@ export default function Quiz() {
         setQuizData(newQuizData);
     }
 
+    function checkResults() {
+        let newCorrectCount = 0;
+
+        quizData.forEach(quizObj => {
+            quizObj.choices.forEach(choice => {
+                if (choice.isSelected && choice.isCorrect) {
+                    newCorrectCount++
+                }
+            })
+        })
+
+        setCorrectCount(newCorrectCount);
+        setGameOngoing(false);
+    }
 
     const quizItems = quizData.map(question => {
         return (
@@ -106,7 +120,7 @@ export default function Quiz() {
     })
 
     const btnResults = gameOngoing ?
-        <button className="btn--generic">Check Results</button> :
+        <button className="btn--generic" onClick={checkResults}>Check Results</button> :
         <>
             <p className="results">You scored {correctCount} / {quizData.length} correct answers</p>
             <button className="btn--generic">Play Again</button>
