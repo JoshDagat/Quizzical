@@ -10,16 +10,19 @@ body {
 }
 
 .App {
-    border: 1px solid red;
     max-width: 550px;
-    height: 550px;
+    min-height: 550px;
     background:
-        no-repeat center url("./images/blob-top-right.png"),
-        no-repeat left url("./images/blob-bottom-left.png");
-    margin: 5rem auto;
+        no-repeat top right / 30% url("./images/blob-top-right.png"),
+        no-repeat bottom left / 25% url("./images/blob-bottom-left.png");
+    margin: 0 auto;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: white;
+    padding-top: 1px;
+    border-radius: 15px;
+    padding: 20px;
 }
