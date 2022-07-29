@@ -3,3 +3,23 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+body {
+    font-family: "Karla";
+    font-weight: 700;
+}
+
+.App {
+    border: 1px solid red;
+    max-width: 550px;
+    height: 550px;
+    background:
+        no-repeat center url("./blob-top-right.png"),
+        no-repeat left url("./blob-bottom-left.png");
+    margin: 5rem auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
